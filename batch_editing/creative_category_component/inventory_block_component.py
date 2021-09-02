@@ -27,21 +27,21 @@ if files != None and len(files) == 0:
 #Operation:
 if files != None:
     for filename in files:
+        filepath = folder + filename
         print(filepath + ":")
         try:
-            filepath = folder + filename
             with open(filepath) as f:
                 data = json.load(f)
             data["minecraft:block"]["components"]["minecraft:creative_category"] = {}
             data["minecraft:block"]["components"]["minecraft:creative_category"]["category"] = input_category
             with open(filepath, "w") as f:
                 json.dump(data, f, indent=2)
-            print("\nSucessfully added \"minecraft:creative_category\" component.")
+            print("Sucessfully added \"minecraft:creative_category\" component.")
         except Exception as error:
             if type(error) == json.decoder.JSONDecodeError:
-                print("\nInvalid json format! (Might be caused by comments in the file...)")
+                print("Invalid json format! (Might be caused by comments in the file...)")
             elif type(error) == KeyError:
-                print("\nNo {error} component found!")
+                print(f"No {error} component found!")
             else:
-                print("\nUnknown error!")
+                print("Unknown error!")
     input("Press ENTER to exit...")
