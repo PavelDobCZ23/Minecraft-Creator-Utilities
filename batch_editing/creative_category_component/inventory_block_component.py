@@ -2,6 +2,14 @@ import json, os
 
 #User input:
 input_file = r'' + str(input("File/folder pathway (String):\n")).replace("\"", "")
+input_subfolders = str(input("Do you wish to go through all subfolders as well? (Y/N):\n"))
+if input_subfolders.lower() == "y":
+    subfolders = True
+elif input_subfolders.lower() == "n":
+    subfolders = False
+else:
+    print("Selected \"N\". Reason: invalid input")
+    subfolders = False
 input_category = str(input("What category do you want the blocks to be in? (String) (Press ENTER for \"Construction\"):\n"))
 input_category = "Construction" if input_category == "" else input_category
     
@@ -11,13 +19,20 @@ if input_file.endswith(".json"):
     folder = str(os.path.dirname(input_file)) + "\\"
 else:
     try:
-        folder = input_file
-        files = tuple(filter(lambda fn: fn.endswith(".json"), os.listdir(folder)))
-        folder = folder + "\\" if not folder.endswith("\\") else folder
+        if not subfolders:
+            folder = input_file
+            files = tuple(filter(lambda fn: fn.endswith(".json"), os.listdir(folder)))
+            folder = folder + "\\" if not folder.endswith("\\") else folder
+        else:
+            files = []
+            for root_folder, directories, file_names in os.walk(input_file, topdown=False):
+                for file_name in file_names:
+                    files.append(os.path.join(root_folder, file_name))
+            folder = ""
     except:
         files = None
         print("Make sure you've specified an existing .json file or folder!")
-        input("Press ENTER to exit...")   
+        input("Press ENTER to exit...")      
 
 if files != None and len(files) == 0:
     files = None
